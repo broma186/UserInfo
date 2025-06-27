@@ -54,7 +54,7 @@ android {
 
 apollo {
     service("userInfo") {
-        packageName.set("com.example.userInfo.data.graphql")
+        packageName.set("com.example.userInfo")
         generateKotlinModels.set(true)
         introspection {
             endpointUrl.set("https://gorest.co.in/graphql/")

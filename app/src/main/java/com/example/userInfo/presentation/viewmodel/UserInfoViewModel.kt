@@ -15,30 +15,29 @@ class UserInfoViewModel @Inject constructor(
     userInfoUseCase: UserInfoUseCase
 ) : ViewModel() {
 
-
-    private val _uiState = MutableStateFlow<UserState>(UserState.StartingState)
-    val uiState: StateFlow<UserState> = _uiState
+    private val _uiState = MutableStateFlow<UserInfoState>(UserInfoState.StartingState)
+    val uiState: StateFlow<UserInfoState> = _uiState
 
     init {
         viewModelScope.launch {
             try {
-                _uiState.value = UserState.Loading
+                _uiState.value = UserInfoState.Loading
                 val userList = userInfoUseCase.invoke()
                 if (userList.isNotEmpty()) {
-                    _uiState.value = UserState.Success(userList)
+                    _uiState.value = UserInfoState.Success(userList)
                 } else {
-                    _uiState.value = UserState.Error("No content to display")
+                    _uiState.value = UserInfoState.Error("No content to display")
                 }
             } catch (exception: Exception) {
-                _uiState.value = UserState.Error(exception.cause?.message)
+                _uiState.value = UserInfoState.Error(exception.cause?.message)
             }
         }
     }
 }
 
-sealed class UserState {
-    data object StartingState : UserState()
-    data object Loading : UserState()
-    data class Success(val content: List<User>) : UserState()
-    data class Error(val errorMessage: String?) : UserState()
+sealed class UserInfoState {
+    data object StartingState : UserInfoState()
+    data object Loading : UserInfoState()
+    data class Success(val content: List<User>) : UserInfoState()
+    data class Error(val errorMessage: String?) : UserInfoState()
 }

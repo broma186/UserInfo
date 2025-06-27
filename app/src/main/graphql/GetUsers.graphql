@@ -1,9 +1,8 @@
 query GetUsers {
     users {
-        data {
+        nodes {
             name
             email
-            created_at
         }
     }
 }

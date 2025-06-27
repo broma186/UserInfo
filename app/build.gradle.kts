@@ -59,6 +59,7 @@ apollo {
         introspection {
             endpointUrl.set("https://gorest.co.in/graphql/")
             headers.put("Authorization", "2b25b1fa4fda3261d85ec984e02e4e3e847c3f562fec9a5d250c19e6c8e87f2c")
+            schemaFile.set(file("src/main/java/com/example/userinfo/data/graphql/schema.json"))
         }
     }
 }

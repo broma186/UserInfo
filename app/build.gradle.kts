@@ -1,6 +1,9 @@
 plugins {
+    alias(libs.plugins.apollo)
+    alias(libs.plugins.hilt)
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -49,10 +52,20 @@ android {
     }
 }
 
+apollo {
+    service("service") {
+        packageName.set("com.example.userInfo.data.graphql")
+        generateKotlinModels.set(true)
+        introspection {
+            endpointUrl.set("https://gorest.co.in/graphql/")
+            headers.put("Authorization", "2b25b1fa4fda3261d85ec984e02e4e3e847c3f562fec9a5d250c19e6c8e87f2c")
+        }
+    }
+}
+
 dependencies {
 
     implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
@@ -66,4 +79,29 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    // Dagger - Hilt
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler) // or use kapt if preferred
+    implementation(libs.hilt.navigation)
+
+    // Coroutines
+    implementation(libs.coroutines.core)
+    implementation(libs.coroutines.android)
+
+    // Coroutine Lifecycle Scopes
+    implementation(libs.androidx.lifecycle.viewmodel)
+    implementation(libs.androidx.lifecycle.runtime)
+
+    //navigation
+    implementation(libs.androidx.navigation.compose)
+
+    // Paging
+    implementation(libs.androidx.paging.runtime)
+    implementation(libs.androidx.paging.compose)
+
+    // GraphQL
+    implementation(libs.apollo.runtime)
+   // implementation("com.apollographql.apollo:apollo-runtime:4.1.0")
+    //implementation(libs.apollo.normalized.cache)
 }

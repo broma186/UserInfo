@@ -1,0 +1,9 @@
+query GetUsers {
+    users {
+        data {
+            name
+            email
+            created_at
+        }
+    }
+}

@@ -1,4 +1,7 @@
 package com.example.userInfo.domain.repository
 
-class UserInfoRepository {
+import com.example.userInfo.domain.model.User
+
+interface UserInfoRepository {
+    suspend fun getUsers(): List<User>
 }

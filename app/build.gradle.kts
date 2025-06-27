@@ -53,7 +53,7 @@ android {
 }
 
 apollo {
-    service("service") {
+    service("userInfo") {
         packageName.set("com.example.userInfo.data.graphql")
         generateKotlinModels.set(true)
         introspection {

@@ -15,6 +15,7 @@ lifecycle = "2.4.1"
 pagingRuntime = "3.1.1"
 pagingCompose = "1.0.0-alpha14"
 navigationCompose = "2.4.1"
+room = "2.6.1"
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -48,5 +49,6 @@ hilt-navigation = { group = "androidx.hilt", name = "hilt-navigation-compose", v
 coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
 coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
 apollo-runtime = {  group = "com.apollographql.apollo3", name = "apollo-runtime", version.ref = "apollo" }
-
-
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }

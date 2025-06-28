@@ -1,6 +1,7 @@
 query GetUsers {
     users {
         nodes {
+            id
             name
             email
         }

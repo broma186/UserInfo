@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.ksp)
+    kotlin("kapt")
 }
 
 android {
@@ -32,6 +33,7 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -56,11 +58,18 @@ apollo {
     service("userInfo") {
         packageName.set("com.example.userInfo")
         generateKotlinModels.set(true)
-        introspection {
-            endpointUrl.set("https://gorest.co.in/graphql/")
-            headers.put("Authorization", "2b25b1fa4fda3261d85ec984e02e4e3e847c3f562fec9a5d250c19e6c8e87f2c")
-        }
+        schemaFile.set(file("src/main/graphql/schema.json"))
     }
+}
+
+configurations.all {
+    resolutionStrategy {
+        force("com.squareup:javapoet:1.13.0")
+    }
+}
+
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
 }
 
 dependencies {
@@ -80,11 +89,6 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    // Dagger - Hilt
-    implementation(libs.hilt.android)
-    ksp(libs.hilt.compiler) // or use kapt if preferred
-    implementation(libs.hilt.navigation)
-
     // Coroutines
     implementation(libs.coroutines.core)
     implementation(libs.coroutines.android)
@@ -102,6 +106,16 @@ dependencies {
 
     // GraphQL
     implementation(libs.apollo.runtime)
-   // implementation("com.apollographql.apollo:apollo-runtime:4.1.0")
-    //implementation(libs.apollo.normalized.cache)
+
+    // Dagger - Hilt
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.compiler)
+    implementation(libs.hilt.navigation)
+
+    // Room
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    ksp(libs.room.compiler)
+
+    ksp("com.squareup:javapoet:1.13.0")
 }

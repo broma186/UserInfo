@@ -1,12 +1,18 @@
 package com.example.userInfo.data.di
 
+import android.content.Context
+import androidx.room.Room
 import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.network.http.LoggingInterceptor
+import com.example.userInfo.data.db.UserDao
+import com.example.userInfo.data.db.UserDatabase
 import com.example.userInfo.data.repository.UserInfoRepositoryImpl
 import com.example.userInfo.domain.repository.UserInfoRepository
 import com.example.userInfo.domain.usecase.UserInfoUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -18,15 +24,29 @@ class AppModule {
     @Singleton
     fun provideApolloClient(): ApolloClient {
         return ApolloClient.Builder()
-            .serverUrl("https://gorest.co.in/graphql/")
-            .addHttpHeader("Authorization", "2b25b1fa4fda3261d85ec984e02e4e3e847c3f562fec9a5d250c19e6c8e87f2c")
+            .serverUrl("https://gorest.co.in/graphql")
+            .addHttpHeader("Authorization", "Bearer 2b25b1fa4fda3261d85ec984e02e4e3e847c3f562fec9a5d250c19e6c8e87f2c")
+            .addHttpInterceptor(LoggingInterceptor(
+                level = LoggingInterceptor.Level.BODY
+            ))
             .build()
     }
 
     @Provides
     @Singleton
-    fun provideUserInfoRepository(apolloClient: ApolloClient): UserInfoRepository {
-        return UserInfoRepositoryImpl(apolloClient)
+    fun provideDatabase(@ApplicationContext context: Context): UserDatabase {
+        return Room.databaseBuilder(context, UserDatabase::class.java, "user_db").build()
+    }
+
+    @Provides
+    fun provideUserDao(db: UserDatabase): UserDao {
+        return db.userDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideUserInfoRepository(dao: UserDao, apolloClient: ApolloClient): UserInfoRepository {
+        return UserInfoRepositoryImpl(dao, apolloClient)
     }
 
     @Provides

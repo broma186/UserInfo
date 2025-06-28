@@ -1,5 +1,4 @@
 plugins {
-    alias(libs.plugins.apollo)
     alias(libs.plugins.hilt)
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -54,14 +53,6 @@ android {
     }
 }
 
-apollo {
-    service("userInfo") {
-        packageName.set("com.example.userInfo")
-        generateKotlinModels.set(true)
-        schemaFile.set(file("src/main/graphql/schema.json"))
-    }
-}
-
 configurations.all {
     resolutionStrategy {
         force("com.squareup:javapoet:1.13.0")
@@ -104,9 +95,6 @@ dependencies {
     implementation(libs.androidx.paging.runtime)
     implementation(libs.androidx.paging.compose)
 
-    // GraphQL
-    implementation(libs.apollo.runtime)
-
     // Dagger - Hilt
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
@@ -116,6 +104,10 @@ dependencies {
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
     ksp(libs.room.compiler)
+    ksp(libs.javapoet)
 
-    ksp("com.squareup:javapoet:1.13.0")
+    // Retrofit
+    implementation(libs.retrofit2)
+    implementation(libs.retrofit2.converter.gson)
+    implementation(libs.okhttp3)
 }

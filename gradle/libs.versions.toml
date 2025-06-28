@@ -10,19 +10,20 @@ composeBom = "2024.04.01"
 hilt = "2.48"
 hiltNav = "1.1.0"
 coroutines = "1.6.0"
-apollo = "3.8.2"
 lifecycle = "2.4.1"
 pagingRuntime = "3.1.1"
 pagingCompose = "1.0.0-alpha14"
 navigationCompose = "2.4.1"
 room = "2.6.1"
+okhttp3 = "4.11.0"
+retrofit2 = "2.9.0"
+javapoet = "1.13.0"
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 ksp = { id = "com.google.devtools.ksp", version = "1.9.0-1.0.13" }
-apollo = { id = "com.apollographql.apollo3", version.ref = "apollo" }
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -48,7 +49,10 @@ hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.r
 hilt-navigation = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltNav" }
 coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
 coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
-apollo-runtime = {  group = "com.apollographql.apollo3", name = "apollo-runtime", version.ref = "apollo" }
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+retrofit2 = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit2" }
+retrofit2-converter-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit2" }
+okhttp3 = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp3" }
+javapoet = { group = "com.squareup", name = "javapoet", version.ref = "javapoet" }

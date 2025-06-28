@@ -15,6 +15,7 @@ data class UserEntity(
 
 fun UserEntity.toDomainModel(): User {
     return User(
+        id = id.toString(),
         name = name,
         email = email,
         createdOn = DateParser.relativeTimeString(System.currentTimeMillis())

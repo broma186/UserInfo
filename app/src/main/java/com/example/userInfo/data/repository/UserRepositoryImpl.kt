@@ -2,7 +2,6 @@ package com.example.userInfo.data.repository
 
 import com.example.userInfo.data.api.UserInfoService
 import com.example.userInfo.data.db.UserDao
-import com.example.userInfo.data.db.UserEntity
 import com.example.userInfo.data.db.toDomainModel
 import com.example.userInfo.data.model.AddUserRequest
 import com.example.userInfo.data.model.UserData
@@ -21,12 +20,13 @@ class UserInfoRepositoryImpl @Inject constructor(
         val lastPageResponse = userInfoService.getUsers(page = totalPages, perPage = 10).body()
 
         val dbUsersById = dao.getAllUsers().associateBy { it.id }
-        val mergedUsers = lastPageResponse?.map { userData ->
+        val mergedUsers = lastPageResponse?.mapNotNull { userData ->
             val existing = dbUsersById[userData.id]
             val addedAt = existing?.addedAt ?: System.currentTimeMillis()
-            userData.mapToEntity(addedAt)
+            userData.id?.let {
+                userData.mapToEntity(addedAt)
+            }
         } ?: emptyList()
-
         dao.insertUsers(mergedUsers)
         return dao.getAllUsers().map { it.toDomainModel() }
     }
@@ -37,9 +37,10 @@ class UserInfoRepositoryImpl @Inject constructor(
 
     override suspend fun addUser(user: UserData) {
         val response = userInfoService.addUser(AddUserRequest(user.name, user.email, "male", "active"))
+        val createdUser = response.body()
         val statusCode = response.code()
-        if (response.isSuccessful && (statusCode == 200 || statusCode == 201)) {
-            dao.insertUser(user.mapToEntity())
+        if (createdUser != null && response.isSuccessful && (statusCode == 200 || statusCode == 201)) {
+            dao.insertUser(createdUser.mapToEntity())
         }
     }
 

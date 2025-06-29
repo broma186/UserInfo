@@ -24,7 +24,7 @@ fun UserData.mapToUI(): User {
 
 fun UserData.mapToEntity(addedAt: Long = System.currentTimeMillis()): UserEntity {
     return UserEntity(
-        id = id ?: 0,
+        id = id ?: throw IllegalStateException("id for $name is null, can't be stored locally"),
         name = name,
         email = email,
         addedAt = addedAt

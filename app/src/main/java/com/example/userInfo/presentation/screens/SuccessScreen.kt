@@ -22,12 +22,11 @@ import com.example.userInfo.presentation.components.AddUserDialog
 fun SuccessScreen(
     users: List<User>,
     addUser: (name: String, email: String) -> Unit
-    //showAddUserDialog: () -> Unit
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         LazyColumn {
             itemsIndexed(users) { index, user ->
-                if (index > 0 && index < users.lastIndex) {
+                if (index > 0 && index <= users.lastIndex) {
                     HorizontalDivider(
                         Modifier.padding(horizontal = 16.dp),
                         thickness = 0.5.dp,

@@ -1,6 +1,5 @@
 package com.example.userInfo.presentation.viewmodel
 
-import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.userInfo.data.model.UserData
@@ -53,7 +52,8 @@ class UserInfoViewModel @Inject constructor(
                         name = name,
                         email = email
                     ))
-                    _uiState.value = (_uiState.value as UserInfoState.Success).copy(content = getUserInfoUseCase.invoke().map { it.mapToUI() })
+                    val updatedUsers = refreshUserInfoUseCase.invoke().map { it.mapToUI() }
+                    _uiState.value = UserInfoState.Success(updatedUsers)
                     _messageAddOrRemoveUser.emit("Successfully added user")
                 } catch (exception: Exception) {
                     _messageAddOrRemoveUser.emit("Failed to add user")

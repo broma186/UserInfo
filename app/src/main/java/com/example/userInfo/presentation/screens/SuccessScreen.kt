@@ -23,4 +23,5 @@ fun SuccessScreen(
             UserRow(name = user.name, email = user.email, createdOn = user.createdOn)
         }
     }
+
 }

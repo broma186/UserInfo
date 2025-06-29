@@ -53,7 +53,7 @@ class UserInfoViewModel @Inject constructor(
                         name = name,
                         email = email
                     ))
-                    getUserInfoUseCase.invoke()
+                    _uiState.value = (_uiState.value as UserInfoState.Success).copy(content = getUserInfoUseCase.invoke().map { it.mapToUI() })
                     _messageAddOrRemoveUser.emit("Successfully added user")
                 } catch (exception: Exception) {
                     _messageAddOrRemoveUser.emit("Failed to add user")

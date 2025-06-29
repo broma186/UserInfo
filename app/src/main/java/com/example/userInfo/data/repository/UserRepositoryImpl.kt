@@ -2,6 +2,7 @@ package com.example.userInfo.data.repository
 
 import com.example.userInfo.data.api.UserInfoService
 import com.example.userInfo.data.db.UserDao
+import com.example.userInfo.data.db.UserEntity
 import com.example.userInfo.data.db.toDomainModel
 import com.example.userInfo.data.model.AddUserRequest
 import com.example.userInfo.data.model.UserData
@@ -19,21 +20,14 @@ class UserInfoRepositoryImpl @Inject constructor(
         val totalPages = response.headers()["x-pagination-pages"]?.toIntOrNull() ?: 1
         val lastPageResponse = userInfoService.getUsers(page = totalPages, perPage = 10).body()
 
-        val dbUsers = dao.getAllUsers()
-        if (dbUsers.isNotEmpty()) {
-            lastPageResponse?.forEach { userData ->
-                dbUsers.forEach { dbUser ->
-                    val addedAtTime = if (dbUser.id == userData.id) {
-                        dbUser.addedAt ?: System.currentTimeMillis() // Already have the time
-                    } else {
-                        System.currentTimeMillis() // Use current time
-                    }
-                    dao.insertUser(userData.mapToEntity(addedAtTime))
-                }
-            }
-        } else {
-            dao.insertUsers(lastPageResponse?.map { user -> user.mapToEntity() } ?: emptyList())
-        }
+        val dbUsersById = dao.getAllUsers().associateBy { it.id }
+        val mergedUsers = lastPageResponse?.map { userData ->
+            val existing = dbUsersById[userData.id]
+            val addedAt = existing?.addedAt ?: System.currentTimeMillis()
+            userData.mapToEntity(addedAt)
+        } ?: emptyList()
+
+        dao.insertUsers(mergedUsers)
         return dao.getAllUsers().map { it.toDomainModel() }
     }
 
@@ -50,6 +44,7 @@ class UserInfoRepositoryImpl @Inject constructor(
     }
 
     override suspend fun deleteUser(user: UserData) {
-        TODO("Not yet implemented")
+        // TODO: Add user removal.
+       // dao.removeUser(user.mapToEntity())
     }
 }

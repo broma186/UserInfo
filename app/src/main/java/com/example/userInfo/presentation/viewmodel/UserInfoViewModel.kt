@@ -48,10 +48,7 @@ class UserInfoViewModel @Inject constructor(
     fun addUser(name: String, email: String) {
         viewModelScope.launch {
                 try {
-                    addUserInfoUseCase.invoke(UserData(
-                        name = name,
-                        email = email
-                    ))
+                    addUserInfoUseCase.invoke(name, email)
                     val updatedUsers = refreshUserInfoUseCase.invoke().map { it.mapToUI() }
                     _uiState.value = UserInfoState.Success(updatedUsers)
                     _messageAddOrRemoveUser.emit("Successfully added user")

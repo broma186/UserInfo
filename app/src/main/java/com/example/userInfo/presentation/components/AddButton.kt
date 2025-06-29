@@ -9,6 +9,7 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -17,17 +18,17 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun AddButton(
     modifier: Modifier = Modifier,
-    addUser: () -> Unit
+    showPopup: MutableState<Boolean>
 ) {
     Box(modifier = modifier.fillMaxSize()) {
         FloatingActionButton(
             onClick = {
-                addUser()
+                showPopup.value = !showPopup.value
             },
             modifier = modifier
                 .align(Alignment.BottomEnd)
                 .padding(16.dp),
-            containerColor = Color(0xFFF0F0F0), // slightly darker than white
+            containerColor = Color.White,
             contentColor = Color.Black,
             elevation = FloatingActionButtonDefaults.elevation(defaultElevation = 6.dp)
         ) {

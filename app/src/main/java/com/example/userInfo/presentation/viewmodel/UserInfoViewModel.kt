@@ -1,30 +1,42 @@
 package com.example.userInfo.presentation.viewmodel
 
+import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.userInfo.data.model.UserData
+import com.example.userInfo.data.model.mapToUI
 import com.example.userInfo.domain.model.User
-import com.example.userInfo.domain.usecase.UserInfoUseCase
+import com.example.userInfo.domain.usecase.AddUserInfoUseCase
+import com.example.userInfo.domain.usecase.GetUserInfoUseCase
+import com.example.userInfo.domain.usecase.RefreshUserInfoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class UserInfoViewModel @Inject constructor(
-    userInfoUseCase: UserInfoUseCase
+    private val getUserInfoUseCase: GetUserInfoUseCase,
+    private val refreshUserInfoUseCase: RefreshUserInfoUseCase,
+    private val addUserInfoUseCase: AddUserInfoUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<UserInfoState>(UserInfoState.StartingState)
     val uiState: StateFlow<UserInfoState> = _uiState
 
+    private val _messageAddOrRemoveUser = MutableSharedFlow<String>()
+    val errorAddOrRemoveUser = _messageAddOrRemoveUser.asSharedFlow()
+
     init {
         viewModelScope.launch {
             try {
                 _uiState.value = UserInfoState.Loading
-                val userList = userInfoUseCase.invoke()
+                val userList = getUserInfoUseCase.invoke()
                 if (userList.isNotEmpty()) {
-                    _uiState.value = UserInfoState.Success(userList)
+                    _uiState.value = UserInfoState.Success(userList.map { it.mapToUI() })
                 } else {
                     _uiState.value = UserInfoState.Error("No content to display")
                 }
@@ -32,6 +44,21 @@ class UserInfoViewModel @Inject constructor(
                 _uiState.value = UserInfoState.Error(exception.cause?.message)
             }
         }
+    }
+
+    fun addUser(name: String, email: String) {
+        viewModelScope.launch {
+                try {
+                    addUserInfoUseCase.invoke(UserData(
+                        name = name,
+                        email = email
+                    ))
+                    getUserInfoUseCase.invoke()
+                    _messageAddOrRemoveUser.emit("Successfully added user")
+                } catch (exception: Exception) {
+                    _messageAddOrRemoveUser.emit("Failed to add user")
+                }
+            }
     }
 }
 

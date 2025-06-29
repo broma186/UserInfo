@@ -6,15 +6,8 @@ import java.time.Duration
 import java.time.Instant
 import java.util.Date
 import java.util.Locale
-import java.util.TimeZone
 
 object DateParser {
-
-    fun parseIso8601ToMillis(isoString: String): Long {
-        val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault())
-        sdf.timeZone = TimeZone.getTimeZone("UTC")
-        return sdf.parse(isoString)?.time ?: 0L
-    }
 
     fun relativeTimeString(createdOnMillis: Long): String {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

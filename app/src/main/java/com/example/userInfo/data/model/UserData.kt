@@ -1,7 +1,32 @@
 package com.example.userInfo.data.model
 
+import com.example.userInfo.DateParser
+import com.example.userInfo.data.db.UserEntity
+import com.example.userInfo.domain.model.User
+import com.google.gson.annotations.Expose
+
 data class UserData(
-    val id: Int,
+    val id: Int? = null,
     val name: String,
-    val email: String
+    val email: String,
+    @Expose(serialize = false, deserialize = false)
+    val addedAt: Long? = null
 )
+
+fun UserData.mapToUI(): User {
+    return User(
+        id = id.toString(),
+        name = name,
+        email = email,
+        createdOn = DateParser.relativeTimeString(addedAt ?: System.currentTimeMillis())
+    )
+}
+
+fun UserData.mapToEntity(addedAt: Long = System.currentTimeMillis()): UserEntity {
+    return UserEntity(
+        id = id ?: 0,
+        name = name,
+        email = email,
+        addedAt = addedAt
+    )
+}

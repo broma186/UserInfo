@@ -2,22 +2,21 @@ package com.example.userInfo.data.db
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.example.userInfo.DateParser
-import com.example.userInfo.domain.model.User
+import com.example.userInfo.data.model.UserData
 
 @Entity(tableName = "users")
 data class UserEntity(
     @PrimaryKey val id: Int,
     val name: String,
     val email: String,
-    val addedAt: Long
+    val addedAt: Long? = null
 )
 
-fun UserEntity.toDomainModel(): User {
-    return User(
-        id = id.toString(),
+fun UserEntity.toDomainModel(): UserData {
+    return UserData(
+        id = id,
         name = name,
         email = email,
-        createdOn = DateParser.relativeTimeString(System.currentTimeMillis())
+        addedAt = addedAt
     )
 }

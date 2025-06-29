@@ -8,13 +8,16 @@ import com.example.userInfo.data.db.UserDao
 import com.example.userInfo.data.db.UserDatabase
 import com.example.userInfo.data.repository.UserInfoRepositoryImpl
 import com.example.userInfo.domain.repository.UserInfoRepository
-import com.example.userInfo.domain.usecase.UserInfoUseCase
+import com.example.userInfo.domain.usecase.AddUserInfoUseCase
+import com.example.userInfo.domain.usecase.GetUserInfoUseCase
+import com.example.userInfo.domain.usecase.RefreshUserInfoUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
@@ -29,6 +32,9 @@ class AppModule {
             .addInterceptor(
                 provideAuthInterceptor()
             )
+            .addInterceptor(HttpLoggingInterceptor().apply {
+                level = HttpLoggingInterceptor.Level.BODY
+            })
             .build()
     }
 
@@ -67,7 +73,19 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun provideUserInfoUseCase(userInfoRepository: UserInfoRepository): UserInfoUseCase {
-        return UserInfoUseCase(userInfoRepository)
+    fun provideGetUserInfoUseCase(userInfoRepository: UserInfoRepository): GetUserInfoUseCase {
+        return GetUserInfoUseCase(userInfoRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideRefreshUserInfoUseCase(userInfoRepository: UserInfoRepository): RefreshUserInfoUseCase {
+        return RefreshUserInfoUseCase(userInfoRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideAddUserInfoUseCase(userInfoRepository: UserInfoRepository): AddUserInfoUseCase {
+        return AddUserInfoUseCase(userInfoRepository)
     }
 }

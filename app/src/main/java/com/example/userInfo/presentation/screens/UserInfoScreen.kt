@@ -1,5 +1,6 @@
 package com.example.userInfo.presentation.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,24 +14,41 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.userInfo.presentation.viewmodel.UserInfoViewModel
 import com.example.userInfo.presentation.viewmodel.UserInfoState
+import kotlinx.coroutines.flow.SharedFlow
 
 @Composable
 fun UserInfoScreen() {
     val viewModel: UserInfoViewModel = viewModel()
-    UserInfoScreenContent(viewModel)
+
+    UserInfoScreenContent(
+        viewModel.uiState.collectAsState().value,
+        viewModel.errorAddOrRemoveUser,
+        viewModel::addUser
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun UserInfoScreenContent(viewModel: UserInfoViewModel) {
-    val userInfoState = viewModel.uiState.collectAsState().value
+fun UserInfoScreenContent(
+    userInfoState: UserInfoState,
+    errorToast: SharedFlow<String>,
+    addUser: (name: String, email: String) -> Unit
+) {
+    val context = LocalContext.current
+    LaunchedEffect(Unit) {
+        errorToast.collect { message ->
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+        }
+    }
     Scaffold(
         topBar = {
             TopAppBar(title = { Text(text = "Users") })
@@ -42,13 +60,13 @@ fun UserInfoScreenContent(viewModel: UserInfoViewModel) {
             ) {
                 when (userInfoState) {
                     is UserInfoState.StartingState -> {
-                        // TODO: Starting screen
+                        // no op
                     }
                     is UserInfoState.Loading -> {
-                        LoadingWheel()
+                        LoadingScreen()
                     }
                     is UserInfoState.Success -> {
-                        SuccessScreen(userInfoState.content)
+                        SuccessScreen(userInfoState.content, addUser)
                     }
                     is UserInfoState.Error -> {
                         ErrorScreen(errorMessage = userInfoState.errorMessage ?: "Sorry, no users")
@@ -59,11 +77,11 @@ fun UserInfoScreenContent(viewModel: UserInfoViewModel) {
 }
 
 @Composable
-fun LoadingWheel() {
+fun LoadingScreen() {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Gray.copy(alpha = 0.5f))
+            .background(Color.White)
             .wrapContentSize(Alignment.Center)
     ) {
         CircularProgressIndicator(

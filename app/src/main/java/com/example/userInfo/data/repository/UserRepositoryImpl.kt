@@ -20,12 +20,10 @@ class UserInfoRepositoryImpl @Inject constructor(
         val lastPageResponse = userInfoService.getUsers(page = totalPages, perPage = 10).body()
 
         val dbUsersById = dao.getAllUsers().associateBy { it.id }
-        val mergedUsers = lastPageResponse?.mapNotNull { userData ->
+        val mergedUsers = lastPageResponse?.map { userData ->
             val existing = dbUsersById[userData.id]
             val addedAt = existing?.addedAt ?: System.currentTimeMillis()
-            userData.id?.let {
-                userData.mapToEntity(addedAt)
-            }
+            userData.mapToEntity(addedAt)
         } ?: emptyList()
         dao.insertUsers(mergedUsers)
         return dao.getAllUsers().map { it.toDomainModel() }
@@ -35,8 +33,8 @@ class UserInfoRepositoryImpl @Inject constructor(
         return dao.getAllUsers().map { it.toDomainModel() }
     }
 
-    override suspend fun addUser(user: UserData) {
-        val response = userInfoService.addUser(AddUserRequest(user.name, user.email, "male", "active"))
+    override suspend fun addUser(name: String, email: String) {
+        val response = userInfoService.addUser(AddUserRequest(name, email, "male", "active"))
         val createdUser = response.body()
         val statusCode = response.code()
         if (createdUser != null && response.isSuccessful && (statusCode == 200 || statusCode == 201)) {

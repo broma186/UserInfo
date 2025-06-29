@@ -15,13 +15,16 @@ class UserInfoRepositoryImpl @Inject constructor(
 ): UserInfoRepository {
 
     override suspend fun getUsers(): List<UserData> {
-        val response = userInfoService.getUsers()
+        val response = userInfoService.getUsers(page = 1, perPage = 10)
+        val totalPages = response.headers()["x-pagination-pages"]?.toIntOrNull() ?: 1
+        val lastPageResponse = userInfoService.getUsers(page = totalPages, perPage = 10).body()
+
         val dbUsers = dao.getAllUsers()
         if (dbUsers.isNotEmpty()) {
-            response.forEach { userData ->
+            lastPageResponse?.forEach { userData ->
                 dbUsers.forEach { dbUser ->
                     val addedAtTime = if (dbUser.id == userData.id) {
-                        dbUser.addedAt ?: System.currentTimeMillis() // don't add time
+                        dbUser.addedAt ?: System.currentTimeMillis() // Already have the time
                     } else {
                         System.currentTimeMillis() // Use current time
                     }
@@ -29,7 +32,7 @@ class UserInfoRepositoryImpl @Inject constructor(
                 }
             }
         } else {
-            dao.insertUsers(response.map { user -> user.mapToEntity() })
+            dao.insertUsers(lastPageResponse?.map { user -> user.mapToEntity() } ?: emptyList())
         }
         return dao.getAllUsers().map { it.toDomainModel() }
     }

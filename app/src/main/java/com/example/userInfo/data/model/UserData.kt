@@ -15,7 +15,7 @@ data class UserData(
 
 fun UserData.mapToUI(): User {
     return User(
-        id = id.toString(),
+        id = id,
         name = name,
         email = email,
         createdOn = DateParser.relativeTimeString(addedAt ?: System.currentTimeMillis())

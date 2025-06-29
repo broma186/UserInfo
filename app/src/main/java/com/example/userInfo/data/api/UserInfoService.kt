@@ -1,7 +1,6 @@
 package com.example.userInfo.data.api
 
 import com.example.userInfo.data.model.AddUserRequest
-import com.example.userInfo.data.model.AddUserResponse
 import com.example.userInfo.data.model.UserData
 import retrofit2.Response
 import retrofit2.http.Body
@@ -18,5 +17,5 @@ interface UserInfoService {
     ): Response<List<UserData>>
 
     @POST("public/v2/users")
-    suspend fun addUser(@Body user: AddUserRequest): Response<AddUserResponse>
+    suspend fun addUser(@Body user: AddUserRequest): Response<UserData>
 }

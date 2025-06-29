@@ -6,9 +6,11 @@ import com.example.userInfo.domain.model.User
 import com.google.gson.annotations.Expose
 
 data class UserData(
-    val id: Int? = null,
+    val id: Int,
     val name: String,
     val email: String,
+    val gender: String? = null,
+    val status: String? = null,
     @Expose(serialize = false, deserialize = false)
     val addedAt: Long? = null
 )
@@ -24,7 +26,7 @@ fun UserData.mapToUI(): User {
 
 fun UserData.mapToEntity(addedAt: Long = System.currentTimeMillis()): UserEntity {
     return UserEntity(
-        id = id ?: throw IllegalStateException("id for $name is null, can't be stored locally"),
+        id = id,
         name = name,
         email = email,
         addedAt = addedAt

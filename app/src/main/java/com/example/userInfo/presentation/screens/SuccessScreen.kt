@@ -9,8 +9,8 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,7 +31,7 @@ fun SuccessScreen(
     removeUser: suspend (Int) -> Boolean
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
-        val userToRemove = remember { mutableStateOf<User?>(null) }
+        val userToRemove = rememberSaveable { mutableStateOf<User?>(null) }
         LazyColumn {
             itemsIndexed(users) { index, user ->
                 if (index > 0 && index <= users.lastIndex) {
@@ -65,23 +65,23 @@ fun SuccessScreen(
                 }
             })
         }
-        val showPopup = remember { mutableStateOf(false) }
+        val showAddDialog = rememberSaveable { mutableStateOf(false) }
         AddButton(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(bottom = 8.dp, end = 8.dp),
-            showPopup = showPopup
+            showPopup = showAddDialog
         )
-        if (showPopup.value) {
+        if (showAddDialog.value) {
             AddUserDialog(onDismiss = {
-                showPopup.value = false
+                showAddDialog.value = false
             },
                 onConfirm = { name, email ->
                     coroutineScope.launch {
                         val success = addUser(name, email)
                         val message = if (success) context.getText(R.string.add_user_result_success) else context.getText(R.string.add_user_result_failure)
                         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-                        showPopup.value = false
+                        showAddDialog.value = false
                     }
                 })
         }

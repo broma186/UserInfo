@@ -28,7 +28,9 @@ import com.example.userInfo.presentation.viewmodel.UserInfoState
 fun UserInfoScreen() {
     val viewModel: UserInfoViewModel = viewModel()
     LaunchedEffect(Unit) {
-        viewModel.fetchUsers()
+        if (viewModel.uiState.value is UserInfoState.StartingState) {
+            viewModel.fetchUsers()
+        }
     }
     UserInfoScreenContent(
         viewModel.uiState.collectAsState().value,

@@ -9,8 +9,6 @@ import com.example.userInfo.domain.usecase.GetUserInfoUseCase
 import com.example.userInfo.domain.usecase.RefreshUserInfoUseCase
 import com.example.userInfo.domain.usecase.RemoveUserInfoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch

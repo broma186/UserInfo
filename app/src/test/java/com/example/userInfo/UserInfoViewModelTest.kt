@@ -18,6 +18,7 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -38,10 +39,10 @@ class UserInfoViewModelTest {
     @RelaxedMockK
     lateinit var mockRemoveUserInfoUseCase: RemoveUserInfoUseCase
 
-    private var viewModel: UserInfoViewModel? = null
+    private lateinit var viewModel: UserInfoViewModel
 
     private val userData = listOf(
-        UserData(id = 1, name = "Joe", email = "john@example.com"),
+        UserData(id = 1, name = "Joe", email = "Joe@example.com"),
         UserData(id = 2, name = "Jane", email = "jane@example.com"),
         UserData(id = 2, name = "Janice", email = "Janice@example.com")
     )
@@ -59,46 +60,73 @@ class UserInfoViewModelTest {
         )
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `when the users are loaded, the starting state is set and the Success state is set when users are returned`() = runTest {
-
         coEvery { mockGetUserInfoUseCase.invoke() } returns userData
-        assertTrue(viewModel?.uiState?.value is UserInfoState.StartingState)
+        assertTrue(viewModel.uiState.value is UserInfoState.StartingState)
 
-        viewModel?.fetchUsers()
+        viewModel.fetchUsers()
 
         advanceUntilIdle()
-        assertTrue(viewModel?.uiState?.value is UserInfoState.Success)
+        assertTrue(viewModel.uiState.value is UserInfoState.Success)
 
-        (viewModel?.uiState?.value as UserInfoState.Success).let {
+        (viewModel.uiState.value as UserInfoState.Success).let {
             assert(it.content.size == 3)
             assert(it.content[2].name == "Janice")
         }
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `loadUsers emits Error state when use case returns empty list`() = runTest {
         coEvery { mockGetUserInfoUseCase.invoke() } returns emptyList()
 
-        viewModel?.fetchUsers()
+        viewModel.fetchUsers()
         advanceUntilIdle()
 
         // Check if no content error is produced, no error thrown.
-        assertTrue(viewModel?.uiState?.value is UserInfoState.Error)
-        assertTrue((viewModel?.uiState?.value as UserInfoState.Error).errorMessage == "No content to display")
+        assertTrue(viewModel.uiState.value is UserInfoState.Error)
+        assertTrue((viewModel.uiState.value as UserInfoState.Error).errorMessage == "No content to display")
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `loadUsers emits Error state when use case throws exception`() = runTest {
         coEvery { mockGetUserInfoUseCase.invoke() } throws Exception("data fetch error")
 
-        viewModel?.fetchUsers()
+        viewModel.fetchUsers()
         advanceUntilIdle()
 
         // error thrown, exception catch block.
-        assert(viewModel?.uiState?.value is UserInfoState.Error)
+        assert(viewModel.uiState.value is UserInfoState.Error)
     }
 
+    @Test
+    fun `addUser returns true when add user use case succeeds`() = runTest {
+        coEvery { mockAddUserInfoUseCase(any(), any()) } returns true
+        assertTrue(viewModel.addUser("rupert", "rupert@example.com"))
+    }
+
+    @Test
+    fun `addUser returns false when add user use case fails`() = runTest {
+        coEvery { mockAddUserInfoUseCase("steven", "steven@example.com") } returns false
+        assertFalse(viewModel.addUser("steven", "steven@example.com"))
+    }
+
+    @Test
+    fun `addUser returns false when exception is thrown`() = runTest {
+        coEvery { mockAddUserInfoUseCase("steven", "steven@example.com") } throws RuntimeException()
+        assertFalse(viewModel.addUser("steven", "steven@example.com"))
+    }
+
+    @Test
+    fun `removeUser returns true when remove user use case succeeds`() = runTest {
+        coEvery { mockRemoveUserInfoUseCase(1) } returns true
+        assertTrue(viewModel.removeUser(1))
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
     @After
     fun tearDown() {
         Dispatchers.resetMain()

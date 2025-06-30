@@ -2,12 +2,12 @@ package com.example.userInfo.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.userInfo.data.model.UserData
 import com.example.userInfo.data.model.mapToUI
 import com.example.userInfo.domain.model.User
 import com.example.userInfo.domain.usecase.AddUserInfoUseCase
 import com.example.userInfo.domain.usecase.GetUserInfoUseCase
 import com.example.userInfo.domain.usecase.RefreshUserInfoUseCase
+import com.example.userInfo.domain.usecase.RemoveUserInfoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,7 +20,8 @@ import javax.inject.Inject
 class UserInfoViewModel @Inject constructor(
     private val getUserInfoUseCase: GetUserInfoUseCase,
     private val refreshUserInfoUseCase: RefreshUserInfoUseCase,
-    private val addUserInfoUseCase: AddUserInfoUseCase
+    private val addUserInfoUseCase: AddUserInfoUseCase,
+    private val removeUserInfoUseCase: RemoveUserInfoUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<UserInfoState>(UserInfoState.StartingState)
@@ -49,13 +50,29 @@ class UserInfoViewModel @Inject constructor(
         viewModelScope.launch {
                 try {
                     addUserInfoUseCase.invoke(name, email)
-                    val updatedUsers = refreshUserInfoUseCase.invoke().map { it.mapToUI() }
-                    _uiState.value = UserInfoState.Success(updatedUsers)
+                    refreshUsers()
                     _messageAddOrRemoveUser.emit("Successfully added user")
                 } catch (exception: Exception) {
                     _messageAddOrRemoveUser.emit("Failed to add user")
                 }
             }
+    }
+
+    fun removeUser(id: Int) {
+        viewModelScope.launch {
+            try {
+                removeUserInfoUseCase.invoke(id)
+                refreshUsers()
+                _messageAddOrRemoveUser.emit("Successfully removed user")
+            } catch (exception: Exception) {
+                _messageAddOrRemoveUser.emit("Failed to remove user")
+            }
+        }
+    }
+
+    private suspend fun refreshUsers() {
+        val updatedUsers = refreshUserInfoUseCase.invoke().map { it.mapToUI() }
+        _uiState.value = UserInfoState.Success(updatedUsers)
     }
 }
 

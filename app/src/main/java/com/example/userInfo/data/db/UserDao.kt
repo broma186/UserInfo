@@ -12,6 +12,9 @@ interface UserDao {
     @Query("SELECT * FROM users ORDER BY addedAt DESC")
     suspend fun getAllUsers(): List<UserEntity>
 
+    @Query("SELECT * FROM users WHERE id = :id")
+    suspend fun getUser(id: Int): UserEntity
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertUser(user: UserEntity)
 

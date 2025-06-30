@@ -32,7 +32,8 @@ fun UserInfoScreen() {
     UserInfoScreenContent(
         viewModel.uiState.collectAsState().value,
         viewModel.errorAddOrRemoveUser,
-        viewModel::addUser
+        viewModel::addUser,
+        viewModel::removeUser
     )
 }
 
@@ -41,7 +42,8 @@ fun UserInfoScreen() {
 fun UserInfoScreenContent(
     userInfoState: UserInfoState,
     errorToast: SharedFlow<String>,
-    addUser: (name: String, email: String) -> Unit
+    addUser: (name: String, email: String) -> Unit,
+    removeUser: (id: Int) -> Unit
 ) {
     val context = LocalContext.current
     LaunchedEffect(Unit) {
@@ -66,7 +68,7 @@ fun UserInfoScreenContent(
                         LoadingScreen()
                     }
                     is UserInfoState.Success -> {
-                        SuccessScreen(userInfoState.content, addUser)
+                        SuccessScreen(userInfoState.content, addUser, removeUser)
                     }
                     is UserInfoState.Error -> {
                         ErrorScreen(errorMessage = userInfoState.errorMessage ?: "Sorry, no users")

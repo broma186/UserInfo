@@ -11,6 +11,7 @@ import com.example.userInfo.domain.repository.UserInfoRepository
 import com.example.userInfo.domain.usecase.AddUserInfoUseCase
 import com.example.userInfo.domain.usecase.GetUserInfoUseCase
 import com.example.userInfo.domain.usecase.RefreshUserInfoUseCase
+import com.example.userInfo.domain.usecase.RemoveUserInfoUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -87,5 +88,11 @@ class AppModule {
     @Singleton
     fun provideAddUserInfoUseCase(userInfoRepository: UserInfoRepository): AddUserInfoUseCase {
         return AddUserInfoUseCase(userInfoRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideRemoveUserInfoUseCase(userInfoRepository: UserInfoRepository): RemoveUserInfoUseCase {
+        return RemoveUserInfoUseCase(userInfoRepository)
     }
 }

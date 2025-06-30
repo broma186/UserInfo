@@ -42,8 +42,11 @@ class UserInfoRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun deleteUser(user: UserData) {
-        // TODO: Add user removal.
-       // dao.removeUser(user.mapToEntity())
+    override suspend fun removeUser(id: Int) {
+       val response = userInfoService.removeUser(id)
+       if (response.isSuccessful && response.code() == 204) {
+           val userToDelete = dao.getUser(id)
+           dao.removeUser(userToDelete)
+       }
     }
 }

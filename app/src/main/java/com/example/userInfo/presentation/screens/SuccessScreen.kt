@@ -17,13 +17,16 @@ import com.example.userInfo.domain.model.User
 import com.example.userInfo.presentation.UserRow
 import com.example.userInfo.presentation.components.AddButton
 import com.example.userInfo.presentation.components.AddUserDialog
+import com.example.userInfo.presentation.components.RemoveUserDialog
 
 @Composable
 fun SuccessScreen(
     users: List<User>,
-    addUser: (name: String, email: String) -> Unit
+    addUser: (name: String, email: String) -> Unit,
+    removeUser: (id: Int) -> Unit
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
+        val userToRemove = remember { mutableStateOf<User?>(null) }
         LazyColumn {
             itemsIndexed(users) { index, user ->
                 if (index > 0 && index <= users.lastIndex) {
@@ -33,12 +36,27 @@ fun SuccessScreen(
                         color = Color.LightGray
                     )
                 }
-                UserRow(name = user.name, email = user.email, createdOn = user.createdOn)
+                UserRow(
+                    name = user.name,
+                    email = user.email,
+                    createdOn = user.createdOn,
+                    onLongPress = {
+                        userToRemove.value = user
+                    })
+            }
+        }
+        userToRemove.value?.run {
+            RemoveUserDialog(name = name, onDismiss = {
+                userToRemove.value = null
+            }) {
+                removeUser(id)
+                userToRemove.value = null
             }
         }
         val showPopup = remember { mutableStateOf(false) }
         AddButton(
-            modifier = Modifier.align(Alignment.BottomEnd)
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
                 .padding(bottom = 8.dp, end = 8.dp),
             showPopup = showPopup
         )

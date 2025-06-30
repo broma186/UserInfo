@@ -1,5 +1,6 @@
 package com.example.userInfo.presentation.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -9,21 +10,24 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.userInfo.domain.model.User
-import com.example.userInfo.presentation.UserRow
+import com.example.userInfo.presentation.components.UserRow
 import com.example.userInfo.presentation.components.AddButton
 import com.example.userInfo.presentation.components.AddUserDialog
 import com.example.userInfo.presentation.components.RemoveUserDialog
+import kotlinx.coroutines.launch
 
 @Composable
 fun SuccessScreen(
     users: List<User>,
-    addUser: (name: String, email: String) -> Unit,
-    removeUser: (id: Int) -> Unit
+    addUser: suspend (String, String) -> Boolean,
+    removeUser: suspend (Int) -> Boolean
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         val userToRemove = remember { mutableStateOf<User?>(null) }
@@ -45,13 +49,20 @@ fun SuccessScreen(
                     })
             }
         }
+        val coroutineScope = rememberCoroutineScope()
+        val context = LocalContext.current
+
         userToRemove.value?.run {
             RemoveUserDialog(name = name, onDismiss = {
                 userToRemove.value = null
-            }) {
-                removeUser(id)
-                userToRemove.value = null
-            }
+            }, onConfirm = {
+                coroutineScope.launch {
+                    val success = removeUser(id)
+                    val message = if (success) "Successfully removed user" else "Failed to remove user"
+                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                    userToRemove.value = null
+                }
+            })
         }
         val showPopup = remember { mutableStateOf(false) }
         AddButton(
@@ -65,8 +76,12 @@ fun SuccessScreen(
                 showPopup.value = false
             },
                 onConfirm = { name, email ->
-                    addUser(name, email)
-                    showPopup.value = false
+                    coroutineScope.launch {
+                        val success = addUser(name, email)
+                        val message = if (success) "Successfully added user" else "Failed to add user"
+                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                        showPopup.value = false
+                    }
                 })
         }
     }

@@ -1,6 +1,5 @@
 package com.example.userInfo.presentation.screens
 
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,16 +13,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.userInfo.presentation.viewmodel.UserInfoViewModel
 import com.example.userInfo.presentation.viewmodel.UserInfoState
-import kotlinx.coroutines.flow.SharedFlow
 
 @Composable
 fun UserInfoScreen() {
@@ -31,7 +27,6 @@ fun UserInfoScreen() {
 
     UserInfoScreenContent(
         viewModel.uiState.collectAsState().value,
-        viewModel.errorAddOrRemoveUser,
         viewModel::addUser,
         viewModel::removeUser
     )
@@ -41,16 +36,9 @@ fun UserInfoScreen() {
 @Composable
 fun UserInfoScreenContent(
     userInfoState: UserInfoState,
-    errorToast: SharedFlow<String>,
-    addUser: (name: String, email: String) -> Unit,
-    removeUser: (id: Int) -> Unit
+    addUser: suspend (String, String) -> Boolean,
+    removeUser: suspend (Int) -> Boolean
 ) {
-    val context = LocalContext.current
-    LaunchedEffect(Unit) {
-        errorToast.collect { message ->
-            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-        }
-    }
     Scaffold(
         topBar = {
             TopAppBar(title = { Text(text = "Users") })

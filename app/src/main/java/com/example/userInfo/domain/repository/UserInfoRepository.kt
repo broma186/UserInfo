@@ -5,6 +5,6 @@ import com.example.userInfo.data.model.UserData
 interface UserInfoRepository {
     suspend fun getUsers(): List<UserData>
     suspend fun refreshUsers(): List<UserData>
-    suspend fun addUser(name: String, email: String)
-    suspend fun removeUser(id: Int)
+    suspend fun addUser(name: String, email: String): Boolean
+    suspend fun removeUser(id: Int): Boolean
 }

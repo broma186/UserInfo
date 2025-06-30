@@ -9,10 +9,8 @@ import com.example.userInfo.domain.usecase.GetUserInfoUseCase
 import com.example.userInfo.domain.usecase.RefreshUserInfoUseCase
 import com.example.userInfo.domain.usecase.RemoveUserInfoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -26,9 +24,6 @@ class UserInfoViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow<UserInfoState>(UserInfoState.StartingState)
     val uiState: StateFlow<UserInfoState> = _uiState
-
-    private val _messageAddOrRemoveUser = MutableSharedFlow<String>()
-    val errorAddOrRemoveUser = _messageAddOrRemoveUser.asSharedFlow()
 
     init {
         viewModelScope.launch {
@@ -46,27 +41,27 @@ class UserInfoViewModel @Inject constructor(
         }
     }
 
-    fun addUser(name: String, email: String) {
-        viewModelScope.launch {
-                try {
-                    addUserInfoUseCase.invoke(name, email)
-                    refreshUsers()
-                    _messageAddOrRemoveUser.emit("Successfully added user")
-                } catch (exception: Exception) {
-                    _messageAddOrRemoveUser.emit("Failed to add user")
-                }
+    suspend fun addUser(name: String, email: String): Boolean {
+        return try {
+            if (addUserInfoUseCase(name, email)) {
+                refreshUsers()
+                return true
             }
+            false
+        } catch (e: Exception) {
+            false
+        }
     }
 
-    fun removeUser(id: Int) {
-        viewModelScope.launch {
-            try {
-                removeUserInfoUseCase.invoke(id)
+    suspend fun removeUser(id: Int): Boolean {
+        return try {
+            if (removeUserInfoUseCase.invoke(id)) {
                 refreshUsers()
-                _messageAddOrRemoveUser.emit("Successfully removed user")
-            } catch (exception: Exception) {
-                _messageAddOrRemoveUser.emit("Failed to remove user")
+                return true
             }
+            false
+        } catch (e: Exception) {
+            false
         }
     }
 

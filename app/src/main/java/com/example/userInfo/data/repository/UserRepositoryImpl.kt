@@ -33,20 +33,31 @@ class UserInfoRepositoryImpl @Inject constructor(
         return dao.getAllUsers().map { it.toDomainModel() }
     }
 
-    override suspend fun addUser(name: String, email: String) {
+    override suspend fun addUser(name: String, email: String): Boolean {
         val response = userInfoService.addUser(AddUserRequest(name, email, "male", "active"))
         val createdUser = response.body()
         val statusCode = response.code()
-        if (createdUser != null && response.isSuccessful && (statusCode == 200 || statusCode == 201)) {
+        return if (createdUser != null &&
+            response.isSuccessful &&
+            (statusCode == 200 || statusCode == 201)
+        ) {
             dao.insertUser(createdUser.mapToEntity())
+            true
+        } else {
+            false
         }
     }
 
-    override suspend fun removeUser(id: Int) {
-       val response = userInfoService.removeUser(id)
-       if (response.isSuccessful && response.code() == 204) {
-           val userToDelete = dao.getUser(id)
-           dao.removeUser(userToDelete)
-       }
+    override suspend fun removeUser(id: Int): Boolean {
+        val response = userInfoService.removeUser(id)
+        return if (response.isSuccessful &&
+            response.code() == 204
+        ) {
+            val userToDelete = dao.getUser(id)
+            dao.removeUser(userToDelete)
+            true
+        } else {
+            false
+        }
     }
 }

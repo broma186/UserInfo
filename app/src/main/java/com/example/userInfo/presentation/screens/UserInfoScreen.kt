@@ -17,7 +17,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.UserInfo.R
 import com.example.userInfo.presentation.viewmodel.UserInfoViewModel
 import com.example.userInfo.presentation.viewmodel.UserInfoState
 
@@ -41,7 +43,7 @@ fun UserInfoScreenContent(
 ) {
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text(text = "Users") })
+            TopAppBar(title = { Text(text = stringResource(id = R.string.toolbar_users)) })
         },
         content = { paddingValues ->
             Column(
@@ -59,7 +61,7 @@ fun UserInfoScreenContent(
                         SuccessScreen(userInfoState.content, addUser, removeUser)
                     }
                     is UserInfoState.Error -> {
-                        ErrorScreen(errorMessage = userInfoState.errorMessage ?: "Sorry, no users")
+                        ErrorScreen(errorMessage = userInfoState.errorMessage ?: stringResource(id = R.string.data_error_message))
                     }
                 }
             }

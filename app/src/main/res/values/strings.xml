@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">UserInfo</string>
+    <string name="toolbar_users">Users</string>
+    <string name="data_error_message">Sorry, no users</string>
     <string name="confirm_remove_user">Are you sure you want to remove %1$s?</string>
     <string name="dialog_ok">OK</string>
     <string name="dialog_cancel">Cancel</string>
@@ -8,4 +10,12 @@
     <string name="enter_email">Enter your email address</string>
     <string name="content_desc_add">Add</string>
     <string name="content_desc_error">Error</string>
+    <string name="total_pages_header">x-pagination-pages</string>
+    <string name="add_user_request_gender">male</string>
+    <string name="add_user_request_status">active</string>
+    <string name="add_user_result_success">Successfully added user</string>
+    <string name="add_user_result_failure">Failed to add user</string>
+    <string name="remove_user_result_success">Successfully removed user</string>
+    <string name="remove_user_result_failure">Failed to remove user</string>
+
 </resources>

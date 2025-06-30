@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.example.UserInfo.R
 import com.example.userInfo.domain.model.User
 import com.example.userInfo.presentation.components.UserRow
 import com.example.userInfo.presentation.components.AddButton
@@ -58,7 +59,7 @@ fun SuccessScreen(
             }, onConfirm = {
                 coroutineScope.launch {
                     val success = removeUser(id)
-                    val message = if (success) "Successfully removed user" else "Failed to remove user"
+                    val message = if (success) context.getText(R.string.remove_user_result_success) else context.getText(R.string.remove_user_result_failure)
                     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                     userToRemove.value = null
                 }
@@ -78,7 +79,7 @@ fun SuccessScreen(
                 onConfirm = { name, email ->
                     coroutineScope.launch {
                         val success = addUser(name, email)
-                        val message = if (success) "Successfully added user" else "Failed to add user"
+                        val message = if (success) context.getText(R.string.add_user_result_success) else context.getText(R.string.add_user_result_failure)
                         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                         showPopup.value = false
                     }

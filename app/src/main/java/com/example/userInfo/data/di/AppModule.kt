@@ -68,8 +68,8 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun provideUserInfoRepository(dao: UserDao, userInfoService: UserInfoService): UserInfoRepository {
-        return UserInfoRepositoryImpl(dao, userInfoService)
+    fun provideUserInfoRepository(dao: UserDao, userInfoService: UserInfoService, @ApplicationContext context: Context): UserInfoRepository {
+        return UserInfoRepositoryImpl(dao, userInfoService, context)
     }
 
     @Provides

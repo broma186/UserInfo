@@ -15,8 +15,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.example.UserInfo.R
 
 @Composable
 fun ErrorScreen(
@@ -35,7 +37,7 @@ fun ErrorScreen(
         ) {
             Icon(
                 imageVector = Icons.Default.Clear,
-                contentDescription = "Error",
+                contentDescription = stringResource(id = R.string.content_desc_error),
                 tint = MaterialTheme.colorScheme.error,
                 modifier = Modifier.size(48.dp)
             )

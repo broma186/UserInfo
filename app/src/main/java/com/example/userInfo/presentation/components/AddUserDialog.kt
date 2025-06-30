@@ -14,7 +14,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.UserInfo.R
 
 @Composable
 fun AddUserDialog(
@@ -28,7 +30,7 @@ fun AddUserDialog(
         onDismissRequest = onDismiss,
         containerColor = Color.White,
         title = {
-            Text(text = "Add new user")
+            Text(text = stringResource(id = R.string.add_user))
         },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -36,26 +38,26 @@ fun AddUserDialog(
                     modifier = Modifier.fillMaxWidth(),
                     value = name,
                     onValueChange = { name = it },
-                    label = { Text("Enter your name") },
+                    label = { Text(stringResource(id = R.string.enter_name)) },
                     singleLine = true
                 )
                 OutlinedTextField(
                     modifier = Modifier.fillMaxWidth(),
                     value = email,
                     onValueChange = { email = it },
-                    label = { Text("Enter your email address") },
+                    label = { Text(stringResource(id = R.string.enter_email)) },
                     singleLine = true
                 )
             }
         },
         confirmButton = {
             TextButton(onClick = { onConfirm(name, email) }) {
-                Text("OK")
+                Text(stringResource(R.string.dialog_ok))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancel")
+                Text(stringResource(R.string.dialog_cancel))
             }
         }
     )

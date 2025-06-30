@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">UserInfo</string>
+    <string name="confirm_remove_user">Are you sure you want to remove %1$s?</string>
+    <string name="dialog_ok">OK</string>
+    <string name="dialog_cancel">Cancel</string>
+    <string name="add_user">Add new user</string>
+    <string name="enter_name">Enter your name</string>
+    <string name="enter_email">Enter your email address</string>
+    <string name="content_desc_add">Add</string>
+    <string name="content_desc_error">Error</string>
 </resources>

@@ -13,7 +13,9 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.UserInfo.R
 
 @Composable
 fun AddButton(
@@ -32,7 +34,7 @@ fun AddButton(
             contentColor = Color.Black,
             elevation = FloatingActionButtonDefaults.elevation(defaultElevation = 6.dp)
         ) {
-            Icon(Icons.Default.Add, contentDescription = "Add")
+            Icon(Icons.Default.Add, contentDescription = stringResource(id = R.string.content_desc_add))
         }
     }
 }

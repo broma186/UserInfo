@@ -5,6 +5,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import com.example.UserInfo.R
 
 @Composable
 fun RemoveUserDialog(
@@ -16,16 +18,16 @@ fun RemoveUserDialog(
         onDismissRequest = onDismiss,
         containerColor = Color.White,
         title = {
-            Text(text = "Are you sure you want to remove $name?")
+            Text(text = stringResource(R.string.confirm_remove_user, name))
         },
         confirmButton = {
             TextButton(onClick = { onConfirm.invoke() }) {
-                Text("OK")
+                Text(stringResource(R.string.dialog_ok))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancel")
+                Text(stringResource(R.string.dialog_cancel))
             }
         }
     )

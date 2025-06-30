@@ -9,6 +9,8 @@ import com.example.userInfo.domain.usecase.GetUserInfoUseCase
 import com.example.userInfo.domain.usecase.RefreshUserInfoUseCase
 import com.example.userInfo.domain.usecase.RemoveUserInfoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -25,7 +27,7 @@ class UserInfoViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<UserInfoState>(UserInfoState.StartingState)
     val uiState: StateFlow<UserInfoState> = _uiState
 
-    init {
+    fun fetchUsers() {
         viewModelScope.launch {
             try {
                 _uiState.value = UserInfoState.Loading
